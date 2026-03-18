@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"os"
 
 	"reto_tecnico/api-go/handlers"
 
@@ -16,7 +17,16 @@ func main() {
 	app.Use(logger.New())
 	app.Use(recover.New())
 
+	app.Get("/health", func(c *fiber.Ctx) error {
+		return c.JSON(fiber.Map{"status": "ok"})
+	})
+
 	app.Post("/qr-factorization", handlers.QRFactorizationHandler)
 
-	log.Fatal(app.Listen(":8080"))
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	log.Fatal(app.Listen(":" + port))
 }

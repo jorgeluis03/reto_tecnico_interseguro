@@ -36,7 +36,10 @@ func FetchStatistics(Q, R [][]float64) (map[string]interface{}, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		raw, _ := io.ReadAll(resp.Body)
+		raw, readErr := io.ReadAll(resp.Body)
+		if readErr != nil {
+			return nil, fmt.Errorf("Node.js API returned status %d (body unreadable: %w)", resp.StatusCode, readErr)
+		}
 		return nil, fmt.Errorf("Node.js API returned status %d: %s", resp.StatusCode, string(raw))
 	}
 

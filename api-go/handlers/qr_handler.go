@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"log"
+
 	"reto_tecnico/api-go/clients"
 	"reto_tecnico/api-go/services"
 
@@ -14,8 +16,9 @@ type MatrixInput struct {
 func QRFactorizationHandler(c *fiber.Ctx) error {
 	var input MatrixInput
 	if err := c.BodyParser(&input); err != nil {
+		log.Printf("body parse error: %v", err)
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "invalid request body: " + err.Error(),
+			"error": "invalid request body",
 		})
 	}
 

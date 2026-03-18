@@ -1,1 +1,5 @@
 .claude
+api-node/node_modules/
+api-node/package-lock.json
+api-node/coverage/
+*.md

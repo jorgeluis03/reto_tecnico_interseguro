@@ -1,12 +1,12 @@
 import { MatricesPayload, StatisticsResult } from '../types';
 
-function flatten(matrix: number[][]): number[] {
-  return matrix.flat();
-}
-
 function isDiagonalMatrix(matrix: number[][]): boolean {
-  for (let i = 0; i < matrix.length; i++) {
-    for (let j = 0; j < matrix[i].length; j++) {
+  if (matrix.length === 0) return true;
+  const rows = matrix.length;
+  const cols = matrix[0].length;
+  if (cols !== rows) return false;
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
       if (i !== j && Math.abs(matrix[i][j]) >= 1e-10) {
         return false;
       }
@@ -16,11 +16,15 @@ function isDiagonalMatrix(matrix: number[][]): boolean {
 }
 
 export function computeStatistics(payload: MatricesPayload): StatisticsResult {
-  const values = [...flatten(payload.Q), ...flatten(payload.R)];
+  const values = payload.Q.flat().concat(payload.R.flat());
+
+  if (values.length === 0) {
+    return { max: 0, min: 0, average: 0, sum: 0, isDiagonal: { Q: true, R: true } };
+  }
 
   const sum = values.reduce((acc, v) => acc + v, 0);
-  const max = Math.max(...values);
-  const min = Math.min(...values);
+  const max = values.reduce((a, b) => Math.max(a, b), -Infinity);
+  const min = values.reduce((a, b) => Math.min(a, b), Infinity);
   const average = sum / values.length;
 
   return {
